@@ -1,0 +1,41 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Albumate{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <!-- 사이드바 -->
+      <aside class="sidebar">
+        <ul class="album-list">
+          <li>
+            <a href="{{ url_for('home') }}">홈</a>
+          </li>
+          {% for album in albums %}
+          <li>
+            <a href="{{ url_for('album_detail', album_id=album.id) }}"
+              >{{ album.name }}</a
+            >
+          </li>
+          {% endfor %}
+        </ul>
+        <form
+          action="{{ url_for('logout') }}"
+          method="post"
+          class="logout-form"
+        >
+          <button type="submit">로그아웃</button>
+        </form>
+      </aside>
+
+      <!-- 메인 콘텐츠 -->
+      <main class="main-content">{% block content %}{% endblock %}</main>
+    </div>
+  </body>
+</html>

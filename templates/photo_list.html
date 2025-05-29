@@ -1,0 +1,14 @@
+<!-- templates/photo_list.html -->
+{% extends 'base.html' %} {% block title %}사진 보기{% endblock %} {% block
+content %}
+<div class="photo-detail-header">
+  <h1>{{ photo.album.name }}</h1>
+  <h2>{{ photo.timestamp }}</h2>
+</div>
+<div class="photo-large">
+  <img
+    src="{{ url_for('static', filename='uploads/' + photo.filename) }}"
+    alt="사진 크게 보기"
+  />
+</div>
+{% endblock %}
