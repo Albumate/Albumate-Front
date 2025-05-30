@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>앨범 생성 팝업</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #fff;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .center-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .main-btn {
+            font-size: 1.5rem;
+            padding: 20px 60px;
+            background: #c0c0c0;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #222;
+            transition: background 0.2s;
+        }
+        .main-btn:hover {
+            background: #a0a0a0;
+            color: #fff;
+        }
+        /* 팝업 배경 */
+        .modal-bg {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.15);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-bg.active {
+            display: flex;
+        }
+        .modal-box {
+            width: 25vw;
+            min-width: 320px;
+            max-width: 500px;
+            height: 25vh;
+            min-height: 260px;
+            max-height: 350px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 36px 32px 32px 32px;
+        }
+        .modal-title {
+            font-size: 2.1rem;
+            font-weight: 500;
+            margin-bottom: 28px;
+            margin-top: 0;
+            text-align: center;
+        }
+        .modal-input {
+            width: 90%;
+            font-size: 1.3rem;
+            padding: 14px;
+            margin-bottom: 32px;
+            border: 2px solid #222;
+            border-radius: 6px;
+            background: #fafafa;
+            color: #222;
+            box-sizing: border-box;
+        }
+        .modal-input::placeholder {
+            color: #bbb;
+        }
+        .modal-btn {
+            width: 90%;
+            height: 48px;
+            background: #c0c0c0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #222;
+            cursor: pointer;
+            display: block;
+            transition: background 0.2s;
+        }
+        .modal-btn:hover {
+            background: #a0a0a0;
+            color: #fff;
+        }
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            font-size: 2rem;
+            color: #888;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        @media (max-width: 600px) {
+            .modal-box {
+                width: 90vw;
+                min-width: 0;
+                height: auto;
+                min-height: 0;
+                max-height: none;
+                padding: 24px 8vw 24px 8vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="center-btn">
+        <button class="main-btn" onclick="openModal()">앨범 생성</button>
+    </div>
+
+    <!-- 팝업 -->
+    <div class="modal-bg" id="modalBg">
+        <div class="modal-box">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div class="modal-title">새 앨범 추가</div>
+            <form id="albumForm" autocomplete="off">
+                <input type="text" name="group_name" class="modal-input" placeholder="그룹 이름" required>
+                <button type="submit" class="modal-btn">생성하기</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('modalBg').classList.add('active');
+        }
+        function closeModal() {
+            document.getElementById('modalBg').classList.remove('active');
+            document.getElementById('albumForm').reset();
+        }
+        // 팝업 외부 클릭 시 닫기
+        document.getElementById('modalBg').addEventListener('click', function(e){
+            if (e.target === this) closeModal();
+        });
+        // 폼 제출 시 알림
+        document.getElementById('albumForm').onsubmit = function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/create_album', {
+                method: 'POST',
+                body: formData
+            })
+            .then(resp => resp.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    alert('그룹이 생성되었습니다!');
+                    closeModal();
+                }
+            });
+        };
+    </script>
+</body>
+</html>
