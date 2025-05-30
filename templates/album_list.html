@@ -1,0 +1,22 @@
+<!-- templates/album_list.html -->
+{% extends 'base.html' %} {% block title %}{{ album.name }} - 사진 목록{%
+endblock %} {% block content %}
+<div class="header-row">
+  <h1>{{ album.name }}</h1>
+  <a href="{{ url_for('add_photo', album_id=album.id) }}" class="add-button"
+    >+ 사진 추가</a
+  >
+</div>
+<div class="grid">
+  {% for photo in album.photos %}
+  <div class="grid-item">
+    <a href="{{ url_for('photo_detail', photo_id=photo.id) }}">
+      <img
+        src="{{ url_for('static', filename='uploads/' ~ photo.filename) }}"
+        alt="사진"
+      />
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
