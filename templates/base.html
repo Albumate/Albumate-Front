@@ -37,5 +37,28 @@
       <!-- 메인 콘텐츠 -->
       <main class="main-content">{% block content %}{% endblock %}</main>
     </div>
+
+    <!-- 팝업 -->
+   <div class="grid">
+    <div class="grid-item">
+      <a href="#">앨범 1</a>
+    </div>
+    <div class="grid-item">
+      <a href="#">앨범 2</a>
+    </div>
+    <div class="grid-item">
+      <a href="#">앨범 3</a>
+    </div>
+  </div>
+
+  <!-- 팝업 -->
+  <div id="popup" class="popup">
+    <div class="popup-content" id="popupContent">
+      <span id="closeBtn" class="close">&times;</span>
+      <!-- JS에서 내용이 동적으로 들어감 -->
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
   </body>
 </html>

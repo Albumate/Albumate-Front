@@ -1,15 +1,15 @@
 <!-- templates/album_list.html -->
-{% extends 'base.html' %} {% block title %}{{ album.name }} - 사진 목록{%
-endblock %} {% block content %}
-<div class="header-row">
-  <h1>{{ album.name }}</h1>
-  <a href="{{ url_for('add_photo', album_id=album.id) }}" class="add-button"
-    >+ 사진 추가</a
-  >
+
+{% extends 'base.html' %}
+{% block title %}{{ album.name }} - 사진 목록{% endblock %}
+{% block content %}
+<div class="header-row1">
+  <h1 class="header-title1">{{ album.name }}</h1>
+  <button class="popup-btn1" id="photo-add-btn1">사진추가</button>
 </div>
-<div class="grid">
+<div class="grid1">
   {% for photo in album.photos %}
-  <div class="grid-item">
+  <div class="grid-item1">
     <a href="{{ url_for('photo_detail', photo_id=photo.id) }}">
       <img
         src="{{ url_for('static', filename='uploads/' ~ photo.filename) }}"
@@ -19,4 +19,14 @@ endblock %} {% block content %}
   </div>
   {% endfor %}
 </div>
+
+<!-- 사진 추가 팝업 -->
+<div id="popup1" class="popup1">
+  <div class="popup-content1" id="popupContent1">
+    <span id="closeBtn1" class="close1">&times;</span>
+    <!-- JS로 내용이 동적으로 들어감 -->
+  </div>
+</div>
 {% endblock %}
+
+
