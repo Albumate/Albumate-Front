@@ -1,16 +1,18 @@
-<!-- templates/home.html -->
-{% extends 'base.html' %} {% block title %}홈 - 앨범 목록{% endblock %} {% block
-content %}
+{% extends 'base.html' %}
+{% block title %}홈 - 앨범 목록{% endblock %}
+{% block content %}
 <div class="header-row">
-  <h1>앨범 목록</h1>
-  <a href="{{ url_for('add_album') }}" class="add-button">+ 앨범 추가</a>
+  <h1 class="header-title">앨범 목록</h1>
+  <div class="button-container">
+    <button class="popup-btn" data-popup="1">앨범 추가</button>
+    <button class="popup-btn" data-popup="2">앨범 초대</button>
+    <button class="popup-btn" data-popup="3">앨범 삭제</button>
+  </div>
 </div>
 <div class="grid">
   {% for album in albums %}
   <div class="grid-item">
-    <a href="{{ url_for('album_detail', album_id=album.id) }}"
-      >{{ album.name }}</a
-    >
+    <a href="{{ url_for('album_detail', album_id=album.id) }}">{{ album.name }}</a>
   </div>
   {% endfor %}
 </div>

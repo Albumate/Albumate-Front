@@ -51,6 +51,14 @@ body {
   border-radius: 4px;
 }
 
+.delete-button {
+  text-decoration: none;
+  background-color: #d32f2f;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -67,4 +75,258 @@ body {
 .grid-item img {
   max-width: 100%;
   height: auto;
+}
+
+
+
+/*팝업 버튼*/
+body {
+  font-family: sans-serif;
+  margin: 40px;
+  background: #f8f8f8;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.button-container {
+  margin: 20px 0;
+}
+
+.popup-btn {
+  padding: 8px 18px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  background: #3b82f6;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.grid {
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.grid-item {
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+.grid-item a {
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+}
+
+.popup {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.popup-content {
+  background: #fff;
+  margin: 15% auto;
+  padding: 30px 40px;
+  border-radius: 10px;
+  width: 340px;
+  text-align: center;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  right: 16px;
+  top: 8px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #888;
+}
+
+.close:hover {
+  color: #f00;
+}
+
+.popup-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 18px;
+}
+
+.popup-input {
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.popup-action-btn {
+  padding: 10px 24px;
+  font-size: 16px;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup-action-btn:hover {
+  background: #2563eb;
+}
+
+.popup-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.popup-warning {
+  font-size: 18px;
+  margin-bottom: 22px;
+  color: #d32f2f;
+}
+
+.popup-delete-btn {
+  background: #e53935;
+}
+
+.popup-delete-btn:hover {
+  background: #b71c1c;
+}
+
+/*사진추가 팝업*/
+.header-row1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.header-title1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.popup-btn1 {
+  padding: 8px 18px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  background: #3b82f6;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.popup-btn1:hover {
+  background: #2563eb;
+}
+
+.grid1 {
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.grid-item1 {
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+.grid-item1 a {
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+}
+
+.popup1 {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.popup-content1 {
+  background: #fff;
+  margin: 15% auto;
+  padding: 30px 40px;
+  border-radius: 10px;
+  width: 340px;
+  text-align: center;
+  position: relative;
+}
+
+.close1 {
+  position: absolute;
+  right: 16px;
+  top: 8px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #888;
+}
+
+.close1:hover {
+  color: #f00;
+}
+
+.popup-title1 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 18px;
+}
+
+.popup-image1 {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.popup-action-btn1,
+.popup-file-btn1 {
+  padding: 10px 24px;
+  font-size: 16px;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.popup-action-btn1:hover,
+.popup-file-btn1:hover {
+  background: #2563eb;
+}
+
+.popup-file-btn1 {
+  display: block;
+  width: 100%;
+  margin: 0 auto 18px auto;
 }
