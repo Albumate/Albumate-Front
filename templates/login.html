@@ -1,70 +1,17 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Albumate - 시작하기</title>
-    <style>
-      body {
-        background-color: #f9f9f9;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        font-family: Arial, sans-serif;
-      }
-
-      .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        width: 250px;
-      }
-
-      .logo img {
-        width: 60px;
-        height: 60px;
-        object-fit: cover;
-      }
-
-      .title {
-        font-weight: bold;
-        font-size: 18px;
-        margin-bottom: 10px;
-      }
-
-      input,
-      button {
-        width: 100%;
-        padding: 10px;
-        border: none;
-        background-color: #ddd;
-        margin-top: 5px;
-        cursor: pointer;
-        font-size: 14px;
-      }
-
-      input::placeholder {
-        color: #555;
-      }
-
-      button:hover {
-        background-color: #ccc;
-      }
-    </style>
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
   </head>
   <body>
     <div class="container">
-      <div class="logo">
-        <img src="/static/img/logo.png" alt="로고" />
-      </div>
-      <div class="title">Albumate</div>
-      <input type="email" placeholder="이메일" />
-      <input type="password" placeholder="비밀번호" />
-      <button>로그인</button>
-      <button>회원가입</button>
+      <h2>로그인</h2>
+      <input type="text" id="username" placeholder="이메일" /><br />
+      <input type="password" id="password" placeholder="비밀번호" /><br />
+      <button onclick="login()">로그인</button>
+      <p>회원이 아니신가요? <a href="/signup.html">회원가입</a></p>
     </div>
+    <script src="/static/js/login.js"></script>
   </body>
 </html>
