@@ -57,12 +57,16 @@ def add_album():
 def add_photo():
     return "사진 추가"
 
-@app.route('/invite', endpoint='invite_user')
+
+@app.route("/delete", methods=["POST"])
+def delete_photo():
+    return "사진 삭제"
+
+
+@app.route("/invite", endpoint="invite_user")
 def some_func():
     pass
 
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
