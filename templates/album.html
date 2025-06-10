@@ -14,6 +14,7 @@
           <button id="invite-btn">구성원 초대</button>
           <button id="members-btn">구성원 보기</button>
           <button id="leave-btn">앨범에서 나가기</button>
+          <button id="delete-btn" style="display: none">앨범 삭제</button>
         </div>
       </div>
       <div id="photo-grid" class="grid"></div>
@@ -55,6 +56,15 @@
         <h3>앨범 구성원</h3>
         <div id="members-list"></div>
         <button onclick="closeMembersModal()">닫기</button>
+      </div>
+    </div>
+    <!-- 앨범 삭제 확인 모달 -->
+    <div class="modal" id="delete-modal">
+      <div class="modal-content">
+        <h3>앨범을 삭제하시겠습니까?</h3>
+        <div id="delete-warning" style="color: red"></div>
+        <button onclick="confirmDeleteAlbum()">삭제</button>
+        <button onclick="closeDeleteModal()">취소</button>
       </div>
     </div>
 

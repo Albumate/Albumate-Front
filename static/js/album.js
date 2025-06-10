@@ -13,22 +13,29 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadAlbumInfo() {
   const albumId = window.location.pathname.split('/').pop();
   const token = localStorage.getItem('access_token');
+  const userId = localStorage.getItem('user_id');
   const res = await fetch(`/api/albums/${albumId}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
-  console.log(data); // 응답 구조 확인
-
   let albumData = data.data;
   if (typeof albumData === 'string') {
-    try {
-      albumData = JSON.parse(albumData);
-    } catch (e) {
-      albumData = {};
-    }
+    try { albumData = JSON.parse(albumData); } catch (e) { albumData = {}; }
   }
   const title = albumData.title || '';
   document.getElementById('album-title').textContent = title;
+
+  // 버튼 표시 제어
+  const leaveBtn = document.getElementById('leave-btn');
+  const deleteBtn = document.getElementById('delete-btn');
+  if (albumData.is_owner || String(albumData.owner_id) === String(userId)) {
+    leaveBtn.style.display = 'none';
+    deleteBtn.style.display = '';
+    deleteBtn.onclick = openDeleteModal;
+  } else {
+    leaveBtn.style.display = '';
+    deleteBtn.style.display = 'none';
+  }
 }
 
 async function loadPhotos() {
@@ -132,6 +139,43 @@ async function loadMembers() {
   }
   const listDiv = document.getElementById('members-list');
   listDiv.innerHTML = members.length
-    ? members.map(m => `${m.nickname}`).join('<br>')
+    ? members.map(m => m.is_owner ? `${m.nickname}(owner)` : m.nickname).join('<br>')
     : '구성원이 없습니다.';
+}
+
+function openDeleteModal() {
+  document.getElementById('delete-warning').textContent = '';
+  document.getElementById('delete-modal').style.display = 'block';
+}
+function closeDeleteModal() {
+  document.getElementById('delete-modal').style.display = 'none';
+}
+async function confirmDeleteAlbum() {
+  // 구성원 수 확인
+  const token = localStorage.getItem('access_token');
+  const res = await fetch(`/api/albums/${albumId}/members`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const data = await res.json();
+  let members = data.data || [];
+  if (typeof members === 'string') {
+    try { members = JSON.parse(members); } catch (e) { members = []; }
+  }
+  // owner 제외 멤버가 1명 이상이면 삭제 불가
+  if (members.filter(m => !m.is_owner).length > 0) {
+    document.getElementById('delete-warning').textContent = '구성원이 남아있으면 앨범을 삭제할 수 없습니다.';
+    return;
+  }
+  // 삭제 요청
+  const delRes = await fetch(`/api/albums/${albumId}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (delRes.ok) {
+    alert('앨범이 삭제되었습니다.');
+    window.location.href = '/home';
+  } else {
+    const delData = await delRes.json();
+    document.getElementById('delete-warning').textContent = delData.message || '삭제 실패';
+  }
 }
