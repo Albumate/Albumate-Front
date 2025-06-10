@@ -6,7 +6,7 @@ async function checkDuplicate(field) {
     return;
   }
 
-  const url = field === 'email' ? '/api/users/email-check' : '/api/users/nickname-check';
+  const url = field === 'email' ? '/api/auth/email-check' : '/api/auth/nickname-check';
 
   const response = await fetch(url, {
     method: 'POST',
@@ -23,7 +23,7 @@ async function signup() {
   const password = document.getElementById('password').value;
   const nickname = document.getElementById('nickname').value;
 
-  const response = await fetch('/api/users/register', {
+  const response = await fetch('/api/auth/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password, nickname })
