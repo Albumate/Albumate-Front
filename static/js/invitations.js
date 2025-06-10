@@ -21,10 +21,12 @@ async function loadInvitations() {
   list.innerHTML = '';
   (invites || []).forEach(invite => {
     const album = invite.album || {};
+    const fromNickname = (invite.from_user && invite.from_user.nickname) ? invite.from_user.nickname : '';
     const div = document.createElement('div');
     div.className = 'invite-item';
     div.innerHTML = `
-      <b>${album.title}</b> - ${album.description || ''} <br>
+      <b>${album.title}</b> - ${album.description || ''}<br>
+      <span style="color: #888;">초대한 사람: ${fromNickname}</span><br>
       <button onclick="acceptInvite('${invite.invite_token}')">수락</button>
       <button onclick="rejectInvite('${invite.invite_token}')">거절</button>
       <hr>
