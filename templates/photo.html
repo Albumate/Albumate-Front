@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>사진 상세</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <div class="sidebar" id="sidebar"></div>
+    <div class="main">
+      <div class="top-bar">
+        <h2 id="album-title"></h2>
+        <div id="photo-date"></div>
+        <button id="delete-btn" style="display: none; float: right">
+          사진 삭제
+        </button>
+        <span
+          id="uploader-nickname"
+          style="float: right; margin-left: 10px; display: none"
+        ></span>
+      </div>
+      <div class="photo-detail">
+        <img id="photo-img" src="" alt="사진" />
+      </div>
+    </div>
+    <script src="/static/js/sidebar.js"></script>
+    <script src="/static/js/photo.js"></script>
+  </body>
+</html>
