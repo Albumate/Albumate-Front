@@ -14,6 +14,7 @@ async function login() {
     localStorage.setItem('access_token', result.data.access_token);
     localStorage.setItem('user_id', result.data.user_id);      
     localStorage.setItem('nickname', result.data.nickname);    
+    localStorage.setItem('username', result.data.username); // 추가된 코드
     window.location.href = '/home';
   } else {
     alert(result.message);

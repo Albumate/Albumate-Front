@@ -81,21 +81,76 @@ async function uploadPhoto() {
 
 function openInviteModal() { document.getElementById('invite-modal').style.display = 'block'; }
 function closeInviteModal() { document.getElementById('invite-modal').style.display = 'none'; }
+async function checkInviteEmailsValid(emails) {
+  const invalidEmails = [];
+  for (const email of emails) {
+    const res = await fetch('/api/auth/email-check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ value: email.trim() })
+    });
+    // 409: 이미 존재하는 이메일(=유효함), 200: 사용 가능(=유효하지 않음)
+    if (res.status === 200) {
+      // 사용 가능한 이메일(=가입되지 않은 이메일)이므로 초대 불가
+      invalidEmails.push(email.trim());
+    }
+    // 409는 이미 가입된 이메일이므로 초대 가능 (아무것도 하지 않음)
+  }
+  return invalidEmails;
+}
+
+// 초대 버튼 클릭 시 호출
 async function inviteMembers() {
-  const emails = document.getElementById('invite-emails').value
-    .split(',').map(e => e.trim()).filter(e => e);
+  const input = document.getElementById('invite-emails').value;
+  const emails = input.split(',').map(e => e.trim()).filter(e => e);
+  if (emails.length === 0) {
+    alert('초대할 이메일을 입력하세요.');
+    return;
+  }
+
+  // 현재 로그인한 사용자 이메일 가져오기
+  const myEmail = localStorage.getItem('username');
+  if (emails.includes(myEmail)) {
+    alert('본인 이메일은 초대할 수 없습니다.');
+    return;
+  }
+
+  // 이미 앨범에 속한 구성원 이메일 체크
   const token = localStorage.getItem('access_token');
-  const res = await fetch(`/api/albums/${albumId}/invite`, {
+  const res = await fetch(`/api/albums/${albumId}/members`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const data = await res.json();
+  let members = data.data || [];
+  if (typeof members === 'string') {
+    try { members = JSON.parse(members); } catch (e) { members = []; }
+  }
+  const memberEmails = members.map(m => m.email);
+  const alreadyMemberEmails = emails.filter(e => memberEmails.includes(e));
+  if (alreadyMemberEmails.length > 0) {
+    alert(`이미 앨범에 속한 구성원: ${alreadyMemberEmails.join(', ')}`);
+    return;
+  }
+
+  // 유효하지 않은 이메일 체크
+  const invalidEmails = await checkInviteEmailsValid(emails);
+  if (invalidEmails.length > 0) {
+    alert(`유효하지 않은 이메일: ${invalidEmails.join(', ')}`);
+    return;
+  }
+
+  // 실제 초대 API 호출
+  const inviteRes = await fetch(`/api/albums/${albumId}/invite`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify({ invite_emails: emails })
   });
-  const data = await res.json();
-  if (res.ok) {
+  const inviteData = await inviteRes.json();
+  if (inviteRes.ok) {
     closeInviteModal();
     alert('초대 완료');
   } else {
-    alert(data.message);
+    alert(inviteData.message);
   }
 }
 
