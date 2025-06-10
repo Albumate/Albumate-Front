@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>앨범</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <div class="sidebar" id="sidebar"></div>
+  <div class="main">
+    <div class="top-bar">
+      <h2 id="album-title"></h2>
+      <div>
+        <button id="add-photo-btn">사진 추가</button>
+        <button id="invite-btn">구성원 초대</button>
+        <button id="leave-btn">앨범에서 나가기</button>
+      </div>
+    </div>
+    <div id="photo-grid" class="grid"></div>
+  </div>
+
+  <!-- 사진 추가 팝업 -->
+  <div class="modal" id="photo-modal">
+    <div class="modal-content">
+      <h3>사진 추가</h3>
+      <input type="file" id="photo-file" accept="image/*" /><br />
+      <button onclick="uploadPhoto()">업로드</button>
+      <button onclick="closePhotoModal()">취소</button>
+    </div>
+  </div>
+  <!-- 구성원 초대 팝업 -->
+  <div class="modal" id="invite-modal">
+    <div class="modal-content">
+      <h3>구성원 초대</h3>
+      <input type="text" id="invite-emails" placeholder="초대할 이메일(쉼표로 구분)" /><br />
+      <button onclick="inviteMembers()">초대</button>
+      <button onclick="closeInviteModal()">취소</button>
+    </div>
+  </div>
+  <!-- 나가기 확인 팝업 -->
+  <div class="modal" id="leave-modal">
+    <div class="modal-content">
+      <h3>정말 앨범에서 나가시겠습니까?</h3>
+      <button onclick="leaveAlbum()">나가기</button>
+      <button onclick="closeLeaveModal()">취소</button>
+    </div>
+  </div>
+
+  <script src="/static/js/sidebar.js"></script>
+  <script src="/static/js/album.js"></script>
+</body>
+</html>

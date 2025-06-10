@@ -22,6 +22,7 @@ async function loadSidebar() {
     <div class="sidebar-top">
       <div class="nickname">${nickname}</div>
       <a href="/home" class="sidebar-link">홈페이지</a>
+      <a href="/invitations" class="sidebar-link">초대받은 앨범</a>
       <div class="sidebar-albums">
         ${albums.map(a => `<a href="/album/${a.album_id}" class="sidebar-link">${a.title}</a>`).join('')}
       </div>
