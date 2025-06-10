@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('add-photo-btn').onclick = openPhotoModal;
   document.getElementById('invite-btn').onclick = openInviteModal;
   document.getElementById('leave-btn').onclick = openLeaveModal;
+  document.getElementById('members-btn').onclick = openMembersModal;
 });
 
 async function loadAlbumInfo() {
@@ -105,4 +106,32 @@ async function leaveAlbum() {
     const data = await res.json();
     alert(data.message);
   }
+}
+
+function openMembersModal() {
+  loadMembers();
+  document.getElementById('members-modal').style.display = 'block';
+}
+function closeMembersModal() {
+  document.getElementById('members-modal').style.display = 'none';
+}
+
+async function loadMembers() {
+  const token = localStorage.getItem('access_token');
+  const res = await fetch(`/api/albums/${albumId}/members`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const data = await res.json();
+  let members = data.data || [];
+  if (typeof members === 'string') {
+    try {
+      members = JSON.parse(members);
+    } catch (e) {
+      members = [];
+    }
+  }
+  const listDiv = document.getElementById('members-list');
+  listDiv.innerHTML = members.length
+    ? members.map(m => `${m.nickname}`).join('<br>')
+    : '구성원이 없습니다.';
 }
