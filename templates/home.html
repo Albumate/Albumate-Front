@@ -1,19 +1,32 @@
-{% extends 'base.html' %}
-{% block title %}홈 - 앨범 목록{% endblock %}
-{% block content %}
-<div class="header-row">
-  <h1 class="header-title">앨범 목록</h1>
-  <div class="button-container">
-    <button class="popup-btn" data-popup="1">앨범 추가</button>
-    <button class="popup-btn" data-popup="2">앨범 초대</button>
-    <button class="popup-btn" data-popup="3">앨범 삭제</button>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>앨범 목록</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <div class="sidebar" id="sidebar"></div>
+  <div class="main">
+    <div class="top-bar">
+      <h2>앨범 목록</h2>
+      <button id="add-album-btn">앨범 추가</button>
+    </div>
+    <div id="album-grid" class="grid"></div>
   </div>
-</div>
-<div class="grid">
-  {% for album in albums %}
-  <div class="grid-item">
-    <a href="{{ url_for('album_detail', album_id=album.id) }}">{{ album.name }}</a>
+
+  <!-- 앨범 추가 팝업 -->
+  <div class="modal" id="album-modal">
+    <div class="modal-content">
+      <h3>앨범 추가</h3>
+      <input type="text" id="album-title" placeholder="앨범 이름" /><br />
+      <input type="text" id="album-desc" placeholder="앨범 설명" /><br />
+      <input type="text" id="album-invites" placeholder="초대할 이메일(쉼표로 구분)" /><br />
+      <button onclick="createAlbum()">생성</button>
+      <button onclick="closeAlbumModal()">취소</button>
+    </div>
   </div>
-  {% endfor %}
-</div>
-{% endblock %}
+
+  <script src="/static/js/sidebar.js"></script>
+  <script src="/static/js/home.js"></script>
+</body>
+</html>
