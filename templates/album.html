@@ -12,7 +12,7 @@
         <div>
           <button id="add-photo-btn">사진 추가</button>
           <button id="invite-btn">구성원 초대</button>
-          <button id="members-btn">구성원 보기</button>
+          <button id="info-btn">앨범 정보 보기</button>
           <button id="leave-btn">앨범에서 나가기</button>
           <button id="delete-btn" style="display: none">앨범 삭제</button>
         </div>
@@ -50,12 +50,14 @@
         <button onclick="closeLeaveModal()">취소</button>
       </div>
     </div>
-    <!-- 구성원 보기 팝업 -->
-    <div class="modal" id="members-modal">
+    <!-- 앨범 정보 및 구성원 보기 팝업 -->
+    <div class="modal" id="info-modal">
       <div class="modal-content">
-        <h3>앨범 구성원</h3>
+        <h3>앨범 정보</h3>
+        <div id="album-info"></div>
+        <h4 style="margin-top: 24px">구성원</h4>
         <div id="members-list"></div>
-        <button onclick="closeMembersModal()">닫기</button>
+        <button onclick="closeInfoModal()">닫기</button>
       </div>
     </div>
     <!-- 앨범 삭제 확인 모달 -->

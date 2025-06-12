@@ -7,8 +7,47 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('add-photo-btn').onclick = openPhotoModal;
   document.getElementById('invite-btn').onclick = openInviteModal;
   document.getElementById('leave-btn').onclick = openLeaveModal;
-  document.getElementById('members-btn').onclick = openMembersModal;
+  document.getElementById('info-btn').onclick = openInfoModal; // 변경
 });
+
+function openInfoModal() {
+  loadAlbumDetailAndMembers();
+  document.getElementById('info-modal').style.display = 'block';
+}
+function closeInfoModal() {
+  document.getElementById('info-modal').style.display = 'none';
+}
+
+async function loadAlbumDetailAndMembers() {
+  const token = localStorage.getItem('access_token');
+  // 앨범 정보
+  const albumRes = await fetch(`/api/albums/${albumId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const albumData = await albumRes.json();
+  let album = albumData.data;
+  if (typeof album === 'string') {
+    try { album = JSON.parse(album); } catch (e) { album = {}; }
+  }
+  document.getElementById('album-info').innerHTML = `
+    <b>앨범명:</b> ${album.title || ''}<br>
+    <b>설명:</b> ${album.description || ''}<br>
+    <b>생성일:</b> ${album.created_at ? album.created_at.slice(0,10) : ''}
+  `;
+
+  // 구성원 정보
+  const membersRes = await fetch(`/api/albums/${albumId}/members`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const membersData = await membersRes.json();
+  let members = membersData.data || [];
+  if (typeof members === 'string') {
+    try { members = JSON.parse(members); } catch (e) { members = []; }
+  }
+  document.getElementById('members-list').innerHTML = members.length
+    ? members.map(m => m.is_owner ? `${m.nickname}(owner)` : m.nickname).join('<br>')
+    : '구성원이 없습니다.';
+}
 
 async function loadAlbumInfo() {
   const albumId = window.location.pathname.split('/').pop();
