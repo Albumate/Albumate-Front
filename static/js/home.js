@@ -11,7 +11,6 @@ async function loadAlbums() {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
-  console.log(data);
   let albums = data.data;
   if (typeof albums === 'string') {
     try {
@@ -22,14 +21,49 @@ async function loadAlbums() {
   }
   const grid = document.getElementById('album-grid');
   grid.innerHTML = '';
-  (albums || []).forEach(album => {
+
+  // 각 앨범의 최근 사진을 비동기로 불러와서 타일에 표시
+  for (const album of albums || []) {
     const div = document.createElement('div');
-    div.className = 'grid-item album-item';
-    div.innerHTML = `<div class="album-title">${album.title}</div>
-      <div class="album-desc">${album.description || ''}</div>`;
+    div.className = 'grid-item album-item album-preview-tile';
+    // 최근 사진 불러오기
+    let photoUrl = '/static/img/album_placeholder.svg'; // 기본 이미지
+    try {
+      const photoRes = await fetch(`/api/albums/${album.album_id}/latest-photo`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      console.log('photoRes status:', photoRes.status); // 디버깅
+      if (photoRes.ok) {
+        const photoData = await photoRes.json();
+        console.log('photoData:', photoData); // 디버깅
+        
+        let data = photoData.data;
+        // data가 문자열이면 JSON 파싱
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data);
+          } catch (e) {
+            data = {};
+          }
+        }
+        
+        if (data && data.url) {
+          photoUrl = data.url;
+          console.log('최종 photoUrl:', photoUrl); // 디버깅
+        }
+      }
+    } catch (e) {
+      console.error('latest-photo API 에러:', e); // 디버깅
+    }
+    div.innerHTML = `
+      <div class="album-thumb-wrap">
+        <img src="${photoUrl}" class="album-thumb" />
+        <div class="album-thumb-title">${album.title}</div>
+      </div>
+    `;
     div.onclick = () => { window.location.href = `/album/${album.album_id}`; };
     grid.appendChild(div);
-  });
+  }
 }
 
 function openAlbumModal() {
