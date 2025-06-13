@@ -21,7 +21,7 @@ function closeInfoModal() {
 async function loadAlbumDetailAndMembers() {
   const token = localStorage.getItem('access_token');
   // 앨범 정보
-  const albumRes = await fetch(`/api/albums/${albumId}`, {
+  const albumRes = await fetch(`${API_BASE_URL}/api/albums/${albumId}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   const albumData = await albumRes.json();
@@ -36,7 +36,7 @@ async function loadAlbumDetailAndMembers() {
   `;
 
   // 구성원 정보
-  const membersRes = await fetch(`/api/albums/${albumId}/members`, {
+  const membersRes = await fetch(`${API_BASE_URL}/api/albums/${albumId}/members`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   const membersData = await membersRes.json();
@@ -53,7 +53,7 @@ async function loadAlbumInfo() {
   const albumId = window.location.pathname.split('/').pop();
   const token = localStorage.getItem('access_token');
   const userId = localStorage.getItem('user_id');
-  const res = await fetch(`/api/albums/${albumId}`, {
+  const res = await fetch(`${API_BASE_URL}/api/albums/${albumId}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
@@ -79,7 +79,7 @@ async function loadAlbumInfo() {
 
 async function loadPhotos() {
   const token = localStorage.getItem('access_token');
-  const res = await fetch(`/api/photos/?album_id=${albumId}`, {
+  const res = await fetch(`${API_BASE_URL}/api/photos/?album_id=${albumId}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
@@ -104,7 +104,7 @@ async function uploadPhoto() {
   const form = new FormData();
   form.append('file', file);
   form.append('album_id', albumId);
-  const res = await fetch('/api/photos/', {
+  const res = await fetch(`${API_BASE_URL}/api/photos/`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
     body: form
@@ -123,7 +123,7 @@ function closeInviteModal() { document.getElementById('invite-modal').style.disp
 async function checkInviteEmailsValid(emails) {
   const invalidEmails = [];
   for (const email of emails) {
-    const res = await fetch('/api/auth/email-check', {
+    const res = await fetch(`${API_BASE_URL}/api/auth/email-check`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ value: email.trim() })
@@ -156,7 +156,7 @@ async function inviteMembers() {
 
   // 이미 앨범에 속한 구성원 이메일 체크
   const token = localStorage.getItem('access_token');
-  const res = await fetch(`/api/albums/${albumId}/members`, {
+  const res = await fetch(`${API_BASE_URL}/api/albums/${albumId}/members`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
@@ -179,7 +179,7 @@ async function inviteMembers() {
   }
 
   // 실제 초대 API 호출
-  const inviteRes = await fetch(`/api/albums/${albumId}/invite`, {
+  const inviteRes = await fetch(`${API_BASE_URL}/api/albums/${albumId}/invite`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify({ invite_emails: emails })
@@ -197,7 +197,7 @@ function openLeaveModal() { document.getElementById('leave-modal').style.display
 function closeLeaveModal() { document.getElementById('leave-modal').style.display = 'none'; }
 async function leaveAlbum() {
   const token = localStorage.getItem('access_token');
-  const res = await fetch(`/api/albums/${albumId}/leave`, {
+  const res = await fetch(`${API_BASE_URL}/api/albums/${albumId}/leave`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` }
   });
@@ -219,7 +219,7 @@ function closeMembersModal() {
 
 async function loadMembers() {
   const token = localStorage.getItem('access_token');
-  const res = await fetch(`/api/albums/${albumId}/members`, {
+  const res = await fetch(`${API_BASE_URL}/api/albums/${albumId}/members`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
@@ -247,7 +247,7 @@ function closeDeleteModal() {
 async function confirmDeleteAlbum() {
   // 구성원 수 확인
   const token = localStorage.getItem('access_token');
-  const res = await fetch(`/api/albums/${albumId}/members`, {
+  const res = await fetch(`${API_BASE_URL}/api/albums/${albumId}/members`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
@@ -261,7 +261,7 @@ async function confirmDeleteAlbum() {
     return;
   }
   // 삭제 요청
-  const delRes = await fetch(`/api/albums/${albumId}`, {
+  const delRes = await fetch(`${API_BASE_URL}/api/albums/${albumId}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` }
   });

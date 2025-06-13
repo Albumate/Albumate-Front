@@ -5,7 +5,7 @@ async function loadSidebar() {
   const token = localStorage.getItem('access_token');
   let albums = [];
   if (userId && token) {
-    const res = await fetch(`/api/albums/${userId}/my`, {
+    const res = await fetch(`${API_BASE_URL}/api/albums/${userId}/my`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();

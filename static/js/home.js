@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadAlbums() {
   const userId = localStorage.getItem('user_id');
   const token = localStorage.getItem('access_token');
-  const res = await fetch(`/api/albums/${userId}/my`, {
+  const res = await fetch(`${API_BASE_URL}/api/albums/${userId}/my`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
@@ -29,7 +29,7 @@ async function loadAlbums() {
     // 최근 사진 불러오기
     let photoUrl = '/static/img/album_placeholder.svg'; // 기본 이미지
     try {
-      const photoRes = await fetch(`/api/albums/${album.album_id}/latest-photo`, {
+      const photoRes = await fetch(`${API_BASE_URL}/api/albums/${album.album_id}/latest-photo`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log('photoRes status:', photoRes.status); // 디버깅
@@ -77,7 +77,7 @@ function closeAlbumModal() {
 async function checkInviteEmailsValid(emails) {
   const invalidEmails = [];
   for (const email of emails) {
-    const res = await fetch('/api/auth/email-check', {
+    const res = await fetch(`${API_BASE_URL}/api/auth/email-check`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ value: email.trim() })
@@ -112,7 +112,7 @@ async function createAlbum() {
   }
 
   const token = localStorage.getItem('access_token');
-  const res = await fetch('/api/albums/', {
+  const res = await fetch(`${API_BASE_URL}/api/albums/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify({ title, description, invite_emails })

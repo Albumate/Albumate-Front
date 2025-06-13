@@ -27,7 +27,7 @@ async function checkDuplicate(field) {
     }
   }
 
-  const url = field === 'email' ? '/api/auth/email-check' : '/api/auth/nickname-check';
+  const url = field === 'email' ? `${API_BASE_URL}/api/auth/email-check` : `${API_BASE_URL}/api/auth/nickname-check`;
 
   const response = await fetch(url, {
     method: 'POST',
@@ -92,7 +92,7 @@ async function signup() {
 
   const password = document.getElementById('password').value;
 
-  const response = await fetch('/api/auth/register', {
+  const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password, nickname })
