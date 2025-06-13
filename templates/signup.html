@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Signup</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>회원가입</h2>
+
+      <div>
+        <input type="text" id="username" placeholder="이메일" />
+        <button onclick="checkDuplicate('email')">중복 확인</button>
+      </div>
+      <br />
+
+      <div>
+        <input type="text" id="nickname" placeholder="닉네임" />
+        <button onclick="checkDuplicate('nickname')">중복 확인</button>
+      </div>
+      <br />
+
+      <input type="password" id="password" placeholder="비밀번호" /><br />
+      <button onclick="signup()">회원가입</button>
+      <p>이미 계정이 있으신가요? <a href="/login">로그인</a></p>
+    </div>
+    <script src="/static/js/signup.js"></script>
+  </body>
+</html>

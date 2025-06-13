@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>앨범 목록</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <div class="sidebar" id="sidebar"></div>
+  <div class="main">
+    <div class="top-bar">
+      <h2>앨범 목록</h2>
+      <button id="add-album-btn">앨범 추가</button>
+    </div>
+    <div id="album-grid" class="grid"></div>
+  </div>
+
+  <!-- 앨범 추가 팝업 -->
+  <div class="modal" id="album-modal">
+    <div class="modal-content">
+      <h3>앨범 추가</h3>
+      <input type="text" id="album-title" placeholder="앨범 이름" /><br />
+      <input type="text" id="album-desc" placeholder="앨범 설명" /><br />
+      <input type="text" id="album-invites" placeholder="초대할 이메일(쉼표로 구분)" /><br />
+      <button onclick="createAlbum()">생성</button>
+      <button onclick="closeAlbumModal()">취소</button>
+    </div>
+  </div>
+
+  <script src="/static/js/sidebar.js"></script>
+  <script src="/static/js/home.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #f8f8f8;
+}
+#container {
+  display: flex;
+}
+.sidebar {
+  width: 220px;
+  background: #222;
+  color: #fff;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 0;
+}
+.sidebar-top {
+}
+.nickname {
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.sidebar-link {
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 20px;
+}
+.sidebar-link:hover {
+  background: #444;
+}
+.sidebar-bottom {
+  text-align: center;
+  margin-bottom: 10px;
+}
+#logout-btn {
+  width: 80%;
+  padding: 8px;
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#logout-btn:hover {
+  background: #c0392b;
+}
+.main {
+  margin-left: 240px;
+  padding: 30px;
+}
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.grid-item {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px #0001;
+  padding: 20px;
+  cursor: pointer;
+  min-width: 180px;
+  min-height: 100px;
+}
+.album-title {
+  font-weight: bold;
+}
+.photo-thumb {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.photo-date {
+  font-size: 0.9em;
+  color: #888;
+  margin-top: 8px;
+}
+.photo-detail {
+  text-align: center;
+}
+.photo-detail img {
+  max-width: 600px;
+  max-height: 80vh;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #0002;
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #0006;
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  min-width: 300px;
+  text-align: center;
+}
+.close-btn {
+  margin-top: 0.5rem;
+}
+button {
+  margin: 5px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background: #3498db;
+  color: #fff;
+  cursor: pointer;
+}
+button:hover {
+  background: #2980b9;
+}
+input[type="text"],
+input[type="password"],
+input[type="file"] {
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 80%;
+}
