@@ -1,0 +1,6 @@
+Flask>=2.0
+gunicorn>=20.0
+Flask-RESTX
+flask-cors
+flask-pymongo
+pymongo

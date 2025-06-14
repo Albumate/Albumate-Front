@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadPhotoDetail() {
   const token = localStorage.getItem('access_token');
   const userId = localStorage.getItem('user_id');
-  const res = await fetch(`/api/photos/${photoId}`, {
+  const res = await fetch(`${API_BASE_URL}/api/photos/${photoId}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
@@ -22,7 +22,7 @@ async function loadPhotoDetail() {
 
   // 앨범 제목 표시
   if (data.album_id) {
-    const albumRes = await fetch(`/api/albums/${data.album_id}`, {
+    const albumRes = await fetch(`${API_BASE_URL}/api/albums/${data.album_id}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     const albumData = await albumRes.json();
@@ -46,7 +46,7 @@ async function loadPhotoDetail() {
     uploaderSpan.style.display = 'none';
     deleteBtn.onclick = async () => {
       if (!confirm('정말 삭제하시겠습니까?')) return;
-      const delRes = await fetch(`/api/photos/${photoId}`, {
+      const delRes = await fetch(`${API_BASE_URL}/api/photos/${photoId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -67,7 +67,7 @@ async function loadPhotoDetail() {
       uploaderSpan.style.display = '';
     } else if (data.user_id) {
       // user_id로 닉네임 조회
-      const userRes = await fetch(`/api/auth/${data.user_id}`, {
+      const userRes = await fetch(`${API_BASE_URL}/api/auth/${data.user_id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const userData = await userRes.json();

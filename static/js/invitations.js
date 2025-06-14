@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadInvitations() {
   const token = localStorage.getItem('access_token');
-  const res = await fetch('/api/albums/invitations', {
+  const res = await fetch(`${API_BASE_URL}/api/albums/invitations`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
@@ -37,7 +37,7 @@ async function loadInvitations() {
 
 async function acceptInvite(inviteToken) {
   const token = localStorage.getItem('access_token');
-  const res = await fetch(`/api/albums/invitations/${inviteToken}/accept`, {
+  const res = await fetch(`${API_BASE_URL}/api/albums/invitations/${inviteToken}/accept`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` }
   });
@@ -52,7 +52,7 @@ async function acceptInvite(inviteToken) {
 
 async function rejectInvite(inviteToken) {
   const token = localStorage.getItem('access_token');
-  const res = await fetch(`/api/albums/invitations/${inviteToken}/reject`, {
+  const res = await fetch(`${API_BASE_URL}/api/albums/invitations/${inviteToken}/reject`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` }
   });

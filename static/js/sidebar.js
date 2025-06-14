@@ -5,7 +5,7 @@ async function loadSidebar() {
   const token = localStorage.getItem('access_token');
   let albums = [];
   if (userId && token) {
-    const res = await fetch(`/api/albums/${userId}/my`, {
+    const res = await fetch(`${API_BASE_URL}/api/albums/${userId}/my`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
@@ -19,15 +19,15 @@ async function loadSidebar() {
     }
   }
   sidebar.innerHTML = `
-    <div class="sidebar-top">
-      <div class="nickname">${nickname}</div>
+    <div class="sidebar-top-fixed">
+      <div class="nickname">${nickname}의 Albumate</div>
       <a href="/home" class="sidebar-link">홈페이지</a>
       <a href="/invitations" class="sidebar-link">초대받은 앨범</a>
-      <div class="sidebar-albums">
-        ${albums.map(a => `<a href="/album/${a.album_id}" class="sidebar-link">${a.title}</a>`).join('')}
-      </div>
     </div>
-    <div class="sidebar-bottom">
+    <div class="sidebar-albums-scroll">
+      ${albums.map(a => `<a href="/album/${a.album_id}" class="sidebar-link">${a.title}</a>`).join('')}
+    </div>
+    <div class="sidebar-bottom-fixed">
       <button id="logout-btn">로그아웃</button>
     </div>
   `;

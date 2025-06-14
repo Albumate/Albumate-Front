@@ -2,7 +2,7 @@ async function login() {
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
 
-  const response = await fetch('/api/auth/login', {
+  const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password })
@@ -14,6 +14,7 @@ async function login() {
     localStorage.setItem('access_token', result.data.access_token);
     localStorage.setItem('user_id', result.data.user_id);      
     localStorage.setItem('nickname', result.data.nickname);    
+    localStorage.setItem('username', result.data.username); // 추가된 코드
     window.location.href = '/home';
   } else {
     alert(result.message);
