@@ -12,9 +12,10 @@ async function login() {
 
   if (response.ok) {
     localStorage.setItem('access_token', result.data.access_token);
+    localStorage.setItem('refresh_token', result.data.refresh_token);
     localStorage.setItem('user_id', result.data.user_id);      
     localStorage.setItem('nickname', result.data.nickname);    
-    localStorage.setItem('username', result.data.username); // 추가된 코드
+    localStorage.setItem('username', username);
     window.location.href = '/home';
   } else {
     alert(result.message);

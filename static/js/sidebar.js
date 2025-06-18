@@ -25,7 +25,7 @@ async function loadSidebar() {
       <a href="/invitations" class="sidebar-link">초대받은 앨범</a>
     </div>
     <div class="sidebar-albums-scroll">
-      ${albums.map(a => `<a href="/album/${a.album_id}" class="sidebar-link">${a.title}</a>`).join('')}
+      ${albums.map(a => `<a href="/album/${a.id}" class="sidebar-link">${a.title}</a>`).join('')}
     </div>
     <div class="sidebar-bottom-fixed">
       <button id="logout-btn">로그아웃</button>

@@ -29,7 +29,8 @@ async function loadAlbums() {
     // 최근 사진 불러오기
     let photoUrl = '/static/img/album_placeholder.svg'; // 기본 이미지
     try {
-      const photoRes = await fetch(`${API_BASE_URL}/api/albums/${album.album_id}/latest-photo`, {
+      // API 문서에 따라 album.id 대신 album.id 사용 (AlbumResp의 id 필드)
+      const photoRes = await fetch(`${API_BASE_URL}/api/albums/${album.id}/latest-photo`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log('photoRes status:', photoRes.status); // 디버깅
@@ -61,7 +62,8 @@ async function loadAlbums() {
         <div class="album-thumb-title">${album.title}</div>
       </div>
     `;
-    div.onclick = () => { window.location.href = `/album/${album.album_id}`; };
+    // API 문서에 따라 album.id 사용
+    div.onclick = () => { window.location.href = `/album/${album.id}`; };
     grid.appendChild(div);
   }
 }
@@ -99,24 +101,35 @@ async function createAlbum() {
 
   // 본인 이메일 체크
   const myEmail = localStorage.getItem('username');
-  if (invite_emails.includes(myEmail)) {
+  if (invite_emails.length > 0 && invite_emails.includes(myEmail)) {
     alert('본인 이메일은 초대할 수 없습니다.');
     return;
   }
 
   // 유효하지 않은 이메일 체크
-  const invalidEmails = await checkInviteEmailsValid(invite_emails);
-  if (invalidEmails.length > 0) {
-    alert(`유효하지 않은 이메일: ${invalidEmails.join(', ')}`);
-    return;
+  if (invite_emails.length > 0) {
+    const invalidEmails = await checkInviteEmailsValid(invite_emails);
+    if (invalidEmails.length > 0) {
+      alert(`유효하지 않은 이메일: ${invalidEmails.join(', ')}`);
+      return;
+    }
   }
 
   const token = localStorage.getItem('access_token');
+  
+  // API 문서에 따라 AlbumDTO 구조로 요청 (invite_emails 제거)
   const res = await fetch(`${API_BASE_URL}/api/albums/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ title, description, invite_emails })
+    body: JSON.stringify({ title, description })
   });
+  
+  if (!res.ok) {
+    const errorData = await res.json();
+    alert(errorData.message || '앨범 생성 실패');
+    return;
+  }
+  
   const data = await res.json();
   console.log(data); // 구조 확인
 
@@ -128,11 +141,30 @@ async function createAlbum() {
       albumData = {};
     }
   }
-  const albumId = albumData.album_id;
+  
+  // API 문서에 따라 id 필드 사용
+  const albumId = albumData.id;
+  
   if (albumId) {
     closeAlbumModal();
+    
+    // 초대 이메일이 있다면 개별적으로 초대 API 호출
+    if (invite_emails.length > 0) {
+      for (const email of invite_emails) {
+        try {
+          await fetch(`${API_BASE_URL}/api/albums/${albumId}/invite`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ email: email.trim() })
+          });
+        } catch (e) {
+          console.error(`초대 실패 (${email}):`, e);
+        }
+      }
+    }
+    
     window.location.href = `/album/${albumId}`;
   } else {
-    alert(data.message || '앨범 생성 실패');
+    alert('앨범 생성 실패');
   }
 }

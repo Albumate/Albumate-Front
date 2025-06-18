@@ -88,9 +88,10 @@ async function loadPhotos() {
   (data || []).forEach(photo => {
     const div = document.createElement('div');
     div.className = 'grid-item photo-item';
+    // API 문서에 따라 uploaded_at 사용, id 사용
     div.innerHTML = `<img src="${photo.url}" alt="" class="photo-thumb" />
-      <div class="photo-date">${photo.created_at.slice(0, 10)}</div>`;
-    div.onclick = () => { window.location.href = `/photo/${photo.photo_id}`; };
+      <div class="photo-date">${photo.uploaded_at ? photo.uploaded_at.slice(0, 10) : ''}</div>`;
+    div.onclick = () => { window.location.href = `/photo/${photo.id}`; };
     grid.appendChild(div);
   });
 }
@@ -178,18 +179,37 @@ async function inviteMembers() {
     return;
   }
 
-  // 실제 초대 API 호출
-  const inviteRes = await fetch(`${API_BASE_URL}/api/albums/${albumId}/invite`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ invite_emails: emails })
-  });
-  const inviteData = await inviteRes.json();
-  if (inviteRes.ok) {
-    closeInviteModal();
-    alert('초대 완료');
+  // API 문서에 따라 각 이메일을 개별적으로 초대
+  let successCount = 0;
+  let failedEmails = [];
+  
+  for (const email of emails) {
+    try {
+      const inviteRes = await fetch(`${API_BASE_URL}/api/albums/${albumId}/invite`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ email: email.trim() })
+      });
+      
+      if (inviteRes.ok) {
+        successCount++;
+      } else {
+        const inviteData = await inviteRes.json();
+        failedEmails.push(`${email} (${inviteData.message})`);
+      }
+    } catch (e) {
+      failedEmails.push(`${email} (네트워크 오류)`);
+    }
+  }
+  
+  closeInviteModal();
+  
+  if (successCount > 0 && failedEmails.length === 0) {
+    alert('모든 초대가 완료되었습니다.');
+  } else if (successCount > 0 && failedEmails.length > 0) {
+    alert(`${successCount}명 초대 완료. 실패: ${failedEmails.join(', ')}`);
   } else {
-    alert(inviteData.message);
+    alert(`모든 초대 실패: ${failedEmails.join(', ')}`);
   }
 }
 
