@@ -3,17 +3,133 @@
   <head>
     <title>Login</title>
     <link rel="stylesheet" href="/static/css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body>
-    <div class="container">
-      <img src="/static/img/logo.png" alt="Albumate Logo" class="logo" />
-      <h2 class="auth-title">로그인</h2>
-      <input type="text" id="username" placeholder="이메일" /><br />
-      <input type="password" id="password" placeholder="비밀번호" /><br />
-      <button onclick="login()">로그인</button>
-      <p>회원이 아니신가요? <a href="/signup">회원가입</a></p>
+  <body class="login-body">
+    <!-- Background geometric patterns -->
+    <div class="bg-patterns">
+      <div class="pattern pattern-1"></div>
+      <div class="pattern pattern-2"></div>
+      <div class="pattern pattern-3"></div>
+      <div class="pattern pattern-4"></div>
     </div>
+
+    <!-- Login Form Container -->
+    <div class="login-container">
+      <div class="login-card">
+        <!-- Header -->
+        <div class="login-header">
+          <img
+            src="/static/img/logo.png"
+            alt="Albumate Logo"
+            class="login-logo"
+          />
+          <h1 class="login-title">로그인</h1>
+          <p class="login-subtitle">계정에 로그인하여 계속하세요</p>
+        </div>
+
+        <!-- Login Form -->
+        <form class="login-form">
+          <!-- Email Field -->
+          <div class="form-group">
+            <label for="username" class="form-label">이메일 주소</label>
+            <div class="input-container">
+              <input
+                type="email"
+                id="username"
+                placeholder="이메일을 입력하세요"
+                class="form-input"
+              />
+            </div>
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <label for="password" class="form-label">비밀번호</label>
+            <div class="input-container password-container">
+              <input
+                type="password"
+                id="password"
+                placeholder="비밀번호를 입력하세요"
+                class="form-input"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                onclick="togglePassword()"
+              >
+                <svg
+                  class="eye-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                <svg
+                  class="eye-off-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  style="display: none"
+                >
+                  <path
+                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+                  />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Login Button -->
+          <button type="button" onclick="login()" class="login-btn">
+            로그인
+          </button>
+        </form>
+
+        <!-- Sign Up Link -->
+        <div class="signup-link">
+          <p>회원이 아니신가요? <a href="/signup">회원가입</a></p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="login-footer">
+        <p>© 2024 Your Company. All rights reserved.</p>
+      </div>
+    </div>
+
     <script src="/static/js/login.js"></script>
     <script src="/static/js/config.js"></script>
+    <script>
+      function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        const eyeIcon = document.querySelector(".eye-icon");
+        const eyeOffIcon = document.querySelector(".eye-off-icon");
+
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          eyeIcon.style.display = "none";
+          eyeOffIcon.style.display = "block";
+        } else {
+          passwordInput.type = "password";
+          eyeIcon.style.display = "block";
+          eyeOffIcon.style.display = "none";
+        }
+      }
+    </script>
   </body>
 </html>

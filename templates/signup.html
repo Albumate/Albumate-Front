@@ -3,27 +3,148 @@
   <head>
     <title>Signup</title>
     <link rel="stylesheet" href="/static/css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body>
-    <div class="container">
-      <img src="/static/img/logo.png" alt="Albumate Logo" class="logo" />
-      <h2 class="auth-title">회원가입</h2>
-      <div>
-        <input type="text" id="username" placeholder="이메일" />
-        <button onclick="checkDuplicate('email')">중복 확인</button>
-      </div>
-      <br />
-
-      <div>
-        <input type="text" id="nickname" placeholder="닉네임" />
-        <button onclick="checkDuplicate('nickname')">중복 확인</button>
-      </div>
-      <br />
-
-      <input type="password" id="password" placeholder="비밀번호" /><br />
-      <button id="signup-btn" onclick="signup()">회원가입</button>
-      <p>이미 계정이 있으신가요? <a href="/login">로그인</a></p>
+  <body class="signup-body">
+    <!-- Background geometric patterns -->
+    <div class="bg-patterns signup-patterns">
+      <div class="pattern signup-pattern-1"></div>
+      <div class="pattern signup-pattern-2"></div>
+      <div class="pattern signup-pattern-3"></div>
+      <div class="pattern signup-pattern-4"></div>
     </div>
+
+    <!-- Signup Form Container -->
+    <div class="signup-container">
+      <div class="signup-card">
+        <!-- Header -->
+        <div class="signup-header">
+          <div class="signup-logo-icon">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+          <h1 class="signup-title">회원가입</h1>
+          <p class="signup-subtitle">새 계정을 만들어 시작하세요</p>
+        </div>
+
+        <!-- Signup Form -->
+        <div class="signup-form">
+          <!-- Email Field -->
+          <div class="form-group">
+            <label for="username" class="form-label">이메일</label>
+            <div class="input-container signup-input-container">
+              <svg
+                class="input-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+              <input
+                type="text"
+                id="username"
+                placeholder="이메일을 입력하세요"
+                class="form-input signup-input"
+              />
+              <button onclick="checkDuplicate('email')" class="check-btn">
+                중복 확인
+              </button>
+            </div>
+          </div>
+
+          <!-- Nickname Field -->
+          <div class="form-group">
+            <label for="nickname" class="form-label">닉네임</label>
+            <div class="input-container signup-input-container">
+              <svg
+                class="input-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <input
+                type="text"
+                id="nickname"
+                placeholder="닉네임을 입력하세요"
+                class="form-input signup-input"
+              />
+              <button onclick="checkDuplicate('nickname')" class="check-btn">
+                중복 확인
+              </button>
+            </div>
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <label for="password" class="form-label">비밀번호</label>
+            <div class="input-container signup-input-container">
+              <svg
+                class="input-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <circle cx="12" cy="16" r="1" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <input
+                type="password"
+                id="password"
+                placeholder="비밀번호를 입력하세요"
+                class="form-input signup-input"
+              />
+            </div>
+          </div>
+
+          <!-- Sign Up Button -->
+          <button id="signup-btn" onclick="signup()" class="signup-btn">
+            회원가입
+          </button>
+        </div>
+
+        <!-- Login Link -->
+        <div class="login-link">
+          <p>이미 계정이 있으신가요? <a href="/login">로그인</a></p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="signup-footer">
+        <p>© 2024 Your Company. All rights reserved.</p>
+      </div>
+    </div>
+
     <script src="/static/js/signup.js"></script>
     <script src="/static/js/config.js"></script>
   </body>

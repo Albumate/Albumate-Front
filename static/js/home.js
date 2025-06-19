@@ -2,6 +2,21 @@ document.addEventListener('DOMContentLoaded', () => {
   loadSidebar();
   loadAlbums();
   document.getElementById('add-album-btn').onclick = openAlbumModal;
+  
+  // 모달 외부 클릭 이벤트 추가
+  const modal = document.getElementById('album-modal');
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeAlbumModal();
+    }
+  });
+  
+  // ESC 키로 모달 닫기
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAlbumModal();
+    }
+  });
 });
 
 async function loadAlbums() {
@@ -11,15 +26,12 @@ async function loadAlbums() {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
-  console.log('앨범 목록 응답:', data); // 디버깅 추가
+  console.log('앨범 목록 응답:', data);
   
-  // API가 배열을 직접 반환하는지, data 속성으로 감싸서 반환하는지 확인
   let albums;
   if (Array.isArray(data)) {
-    // 배열을 직접 반환하는 경우
     albums = data;
   } else if (data.data) {
-    // data 속성으로 감싸서 반환하는 경우
     albums = data.data;
   } else {
     albums = [];
@@ -33,28 +45,36 @@ async function loadAlbums() {
     }
   }
   
-  console.log('파싱된 앨범:', albums); // 디버깅 추가
+  console.log('파싱된 앨범:', albums);
   
   const grid = document.getElementById('album-grid');
+  const emptyState = document.getElementById('empty-state');
+  
   grid.innerHTML = '';
 
-  // 각 앨범의 최근 사진을 비동기로 불러와서 타일에 표시
-  for (const album of albums || []) {
+  if (!albums || albums.length === 0) {
+    emptyState.style.display = 'block';
+    return;
+  }
+
+  emptyState.style.display = 'none';
+
+  // 각 앨범의 최근 사진을 비동기로 불러와서 카드에 표시
+  for (const album of albums) {
     const div = document.createElement('div');
-    div.className = 'grid-item album-item album-preview-tile';
+    div.className = 'album-card';
+    
     // 최근 사진 불러오기
-    let photoUrl = '/static/img/album_placeholder.svg'; // 기본 이미지
+    let photoUrl = '';
     try {
-      // API 문서에 따라 album.id 대신 album.id 사용 (AlbumResp의 id 필드)
       const photoRes = await fetch(`${API_BASE_URL}/api/albums/${album.id}/latest-photo`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      console.log('최신 사진 API 응답 상태:', photoRes.status); // 디버깅
+      console.log('최신 사진 API 응답 상태:', photoRes.status);
       if (photoRes.ok) {
         const photoData = await photoRes.json();
-        console.log('최신 사진 데이터:', photoData); // 디버깅
+        console.log('최신 사진 데이터:', photoData);
         
-        // API 응답 구조 확인
         let latestPhoto;
         if (photoData.data) {
           latestPhoto = photoData.data;
@@ -72,29 +92,69 @@ async function loadAlbums() {
         
         if (latestPhoto && latestPhoto.url) {
           photoUrl = latestPhoto.url;
-          console.log('최종 photoUrl:', photoUrl); // 디버깅
+          console.log('최종 photoUrl:', photoUrl);
         }
       }
     } catch (e) {
-      console.error('latest-photo API 에러:', e); // 디버깅
+      console.error('latest-photo API 에러:', e);
     }
+
     div.innerHTML = `
-      <div class="album-thumb-wrap">
-        <img src="${photoUrl}" class="album-thumb" />
-        <div class="album-thumb-title">${album.title}</div>
+      <div class="album-thumbnail">
+        ${photoUrl ? 
+          `<img src="${photoUrl}" alt="${album.title}" />` : 
+          `<div class="album-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="9" cy="9" r="2"/>
+              <path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+            </svg>
+          </div>`
+        }
+      </div>
+      <div class="album-info">
+        <h3 class="album-title-text">${album.title}</h3>
+        <p class="album-description">${album.description || ''}</p>
+        <div class="album-meta">
+          <div class="album-meta-item">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span>0장</span>
+          </div>
+          <div class="album-meta-item">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <span>${new Date(album.created_at || Date.now()).toLocaleDateString()}</span>
+          </div>
+        </div>
       </div>
     `;
-    // API 문서에 따라 album.id 사용
+    
     div.onclick = () => { window.location.href = `/album/${album.id}`; };
     grid.appendChild(div);
   }
 }
 
 function openAlbumModal() {
-  document.getElementById('album-modal').style.display = 'block';
+  const modal = document.getElementById('album-modal');
+  modal.style.display = 'flex'; // flex로 설정하여 중앙 정렬
 }
+
 function closeAlbumModal() {
-  document.getElementById('album-modal').style.display = 'none';
+  const modal = document.getElementById('album-modal');
+  modal.style.display = 'none';
+  // 입력 필드 초기화
+  document.getElementById('album-title').value = '';
+  document.getElementById('album-desc').value = '';
+  document.getElementById('album-invites').value = '';
 }
 
 // 이메일 유효성 체크 함수 (album.js와 동일하게 복사)
