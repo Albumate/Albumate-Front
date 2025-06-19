@@ -347,7 +347,6 @@ async function loadAlbumDetailAndMembers() {
             </div>
             <div class="member-email">${member.email}</div>
           </div>
-          <div class="member-joined">가입: ${member.joined_at}</div>
         </div>
       `).join('');
     }
