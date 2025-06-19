@@ -25,7 +25,8 @@ async function loadAlbumDetailAndMembers() {
     headers: { Authorization: `Bearer ${token}` }
   });
   const albumData = await albumRes.json();
-  let album = albumData.data;
+  // API가 앨범 데이터를 직접 반환하므로 albumData를 바로 사용
+  let album = albumData;
   if (typeof album === 'string') {
     try { album = JSON.parse(album); } catch (e) { album = {}; }
   }
@@ -40,10 +41,57 @@ async function loadAlbumDetailAndMembers() {
     headers: { Authorization: `Bearer ${token}` }
   });
   const membersData = await membersRes.json();
-  let members = membersData.data || [];
-  if (typeof members === 'string') {
-    try { members = JSON.parse(members); } catch (e) { members = []; }
+  console.log('구성원 응답:', membersData); // 디버깅 추가
+  
+  // API가 사용자 ID 배열을 반환하므로 각 ID로 사용자 정보를 조회
+  let memberIds;
+  if (Array.isArray(membersData)) {
+    memberIds = membersData;
+  } else if (membersData.data) {
+    memberIds = membersData.data;
+  } else {
+    memberIds = [];
   }
+  
+  console.log('구성원 ID 배열:', memberIds); // 디버깅 추가
+  
+  // 각 구성원 ID로 사용자 정보 조회
+  const members = [];
+  for (const userId of memberIds) {
+    try {
+      const userRes = await fetch(`${API_BASE_URL}/api/auth/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (userRes.ok) {
+        const userData = await userRes.json();
+        let user = userData.data || userData;
+        if (typeof user === 'string') {
+          try { user = JSON.parse(user); } catch (e) { user = {}; }
+        }
+        // 앨범 소유자인지 확인
+        const isOwner = String(userId) === String(album.owner_id);
+        members.push({
+          id: userId,
+          nickname: user.nickname || '알 수 없음',
+          email: user.email || user.username || '',
+          is_owner: isOwner
+        });
+      }
+    } catch (e) {
+      console.error(`사용자 정보 조회 실패 (${userId}):`, e);
+      // 정보를 가져올 수 없는 경우에도 표시
+      const isOwner = String(userId) === String(album.owner_id);
+      members.push({
+        id: userId,
+        nickname: '알 수 없음',
+        email: '',
+        is_owner: isOwner
+      });
+    }
+  }
+  
+  console.log('파싱된 구성원:', members); // 디버깅 추가
+  
   document.getElementById('members-list').innerHTML = members.length
     ? members.map(m => m.is_owner ? `${m.nickname}(owner)` : m.nickname).join('<br>')
     : '구성원이 없습니다.';
@@ -57,7 +105,8 @@ async function loadAlbumInfo() {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
-  let albumData = data.data;
+  // API가 앨범 데이터를 직접 반환하므로 data를 바로 사용
+  let albumData = data;
   if (typeof albumData === 'string') {
     try { albumData = JSON.parse(albumData); } catch (e) { albumData = {}; }
   }
@@ -83,9 +132,32 @@ async function loadPhotos() {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
+  console.log('사진 목록 응답:', data); // 디버깅 추가
+  
+  // API 응답 구조 확인
+  let photos;
+  if (Array.isArray(data)) {
+    photos = data;
+  } else if (data.data) {
+    photos = data.data;
+  } else {
+    photos = [];
+  }
+  
+  if (typeof photos === 'string') {
+    try {
+      photos = JSON.parse(photos);
+    } catch (e) {
+      photos = [];
+    }
+  }
+  
+  console.log('파싱된 사진 목록:', photos); // 디버깅 추가
+  
   const grid = document.getElementById('photo-grid');
   grid.innerHTML = '';
-  (data || []).forEach(photo => {
+  (photos || []).forEach(photo => {
+    console.log('개별 사진 데이터:', photo); // 디버깅 추가
     const div = document.createElement('div');
     div.className = 'grid-item photo-item';
     // API 문서에 따라 uploaded_at 사용, id 사용
@@ -155,17 +227,58 @@ async function inviteMembers() {
     return;
   }
 
-  // 이미 앨범에 속한 구성원 이메일 체크
+  // 이미 앨범에 속한 구성원 이메일 체크 - 구성원 정보 수정
   const token = localStorage.getItem('access_token');
+  
+  // 앨범 정보 조회 (owner_id 확인용)
+  const albumRes = await fetch(`${API_BASE_URL}/api/albums/${albumId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const albumData = await albumRes.json();
+  let album = albumData;
+  if (typeof album === 'string') {
+    try { album = JSON.parse(album); } catch (e) { album = {}; }
+  }
+  
+  // 구성원 ID 배열 조회
   const res = await fetch(`${API_BASE_URL}/api/albums/${albumId}/members`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
-  let members = data.data || [];
-  if (typeof members === 'string') {
-    try { members = JSON.parse(members); } catch (e) { members = []; }
+  let memberIds = Array.isArray(data) ? data : (data.data || []);
+  if (typeof memberIds === 'string') {
+    try {
+      memberIds = JSON.parse(memberIds);
+    } catch (e) {
+      memberIds = [];
+    }
   }
-  const memberEmails = members.map(m => m.email);
+  
+  // 각 구성원 ID로 사용자 정보 조회하여 이메일 수집
+  const memberEmails = [];
+  for (const userId of memberIds) {
+    try {
+      const userRes = await fetch(`${API_BASE_URL}/api/auth/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (userRes.ok) {
+        const userData = await userRes.json();
+        let user = userData.data || userData;
+        if (typeof user === 'string') {
+          try { user = JSON.parse(user); } catch (e) { user = {}; }
+        }
+        const userEmail = user.email || user.username || '';
+        if (userEmail) {
+          memberEmails.push(userEmail);
+        }
+      }
+    } catch (e) {
+      console.error(`사용자 정보 조회 실패 (${userId}):`, e);
+    }
+  }
+  
+  console.log('기존 구성원 이메일:', memberEmails); // 디버깅 추가
+  
   const alreadyMemberEmails = emails.filter(e => memberEmails.includes(e));
   if (alreadyMemberEmails.length > 0) {
     alert(`이미 앨범에 속한 구성원: ${alreadyMemberEmails.join(', ')}`);
@@ -185,19 +298,24 @@ async function inviteMembers() {
   
   for (const email of emails) {
     try {
+      console.log(`초대 시도: ${email}`); // 디버깅 추가
       const inviteRes = await fetch(`${API_BASE_URL}/api/albums/${albumId}/invite`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ email: email.trim() })
       });
       
+      console.log(`초대 응답 (${email}):`, inviteRes.status); // 디버깅 추가
+      
       if (inviteRes.ok) {
         successCount++;
       } else {
         const inviteData = await inviteRes.json();
+        console.log(`초대 실패 데이터 (${email}):`, inviteData); // 디버깅 추가
         failedEmails.push(`${email} (${inviteData.message})`);
       }
     } catch (e) {
+      console.error(`초대 네트워크 오류 (${email}):`, e); // 디버깅 추가
       failedEmails.push(`${email} (네트워크 오류)`);
     }
   }
@@ -239,18 +357,64 @@ function closeMembersModal() {
 
 async function loadMembers() {
   const token = localStorage.getItem('access_token');
+  
+  // 앨범 정보 조회 (owner_id 확인용)
+  const albumRes = await fetch(`${API_BASE_URL}/api/albums/${albumId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const albumData = await albumRes.json();
+  let album = albumData;
+  if (typeof album === 'string') {
+    try { album = JSON.parse(album); } catch (e) { album = {}; }
+  }
+  
+  // 구성원 ID 배열 조회
   const res = await fetch(`${API_BASE_URL}/api/albums/${albumId}/members`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
-  let members = data.data || [];
-  if (typeof members === 'string') {
+  let memberIds = Array.isArray(data) ? data : (data.data || []);
+  if (typeof memberIds === 'string') {
     try {
-      members = JSON.parse(members);
+      memberIds = JSON.parse(memberIds);
     } catch (e) {
-      members = [];
+      memberIds = [];
     }
   }
+  
+  // 각 구성원 ID로 사용자 정보 조회
+  const members = [];
+  for (const userId of memberIds) {
+    try {
+      const userRes = await fetch(`${API_BASE_URL}/api/auth/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (userRes.ok) {
+        const userData = await userRes.json();
+        let user = userData.data || userData;
+        if (typeof user === 'string') {
+          try { user = JSON.parse(user); } catch (e) { user = {}; }
+        }
+        const isOwner = String(userId) === String(album.owner_id);
+        members.push({
+          id: userId,
+          nickname: user.nickname || '알 수 없음',
+          email: user.email || user.username || '',
+          is_owner: isOwner
+        });
+      }
+    } catch (e) {
+      console.error(`사용자 정보 조회 실패 (${userId}):`, e);
+      const isOwner = String(userId) === String(album.owner_id);
+      members.push({
+        id: userId,
+        nickname: '알 수 없음',
+        email: '',
+        is_owner: isOwner
+      });
+    }
+  }
+  
   const listDiv = document.getElementById('members-list');
   listDiv.innerHTML = members.length
     ? members.map(m => m.is_owner ? `${m.nickname}(owner)` : m.nickname).join('<br>')
@@ -265,21 +429,47 @@ function closeDeleteModal() {
   document.getElementById('delete-modal').style.display = 'none';
 }
 async function confirmDeleteAlbum() {
-  // 구성원 수 확인
   const token = localStorage.getItem('access_token');
+  
+  // 앨범 정보 조회 (owner_id 확인용)
+  const albumRes = await fetch(`${API_BASE_URL}/api/albums/${albumId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const albumData = await albumRes.json();
+  let album = albumData;
+  if (typeof album === 'string') {
+    try { album = JSON.parse(album); } catch (e) { album = {}; }
+  }
+  
+  // 구성원 ID 배열 조회
   const res = await fetch(`${API_BASE_URL}/api/albums/${albumId}/members`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
-  let members = data.data || [];
-  if (typeof members === 'string') {
-    try { members = JSON.parse(members); } catch (e) { members = []; }
+  
+  // API가 구성원 ID 배열을 반환하므로 올바르게 처리
+  let memberIds = Array.isArray(data) ? data : (data.data || []);
+  if (typeof memberIds === 'string') {
+    try { 
+      memberIds = JSON.parse(memberIds); 
+    } catch (e) { 
+      memberIds = []; 
+    }
   }
-  // owner 제외 멤버가 1명 이상이면 삭제 불가
-  if (members.filter(m => !m.is_owner).length > 0) {
+  
+  console.log('구성원 ID 배열:', memberIds); // 디버깅 추가
+  console.log('앨범 소유자 ID:', album.owner_id); // 디버깅 추가
+  
+  // owner를 제외한 다른 구성원이 있는지 확인
+  const nonOwnerMembers = memberIds.filter(memberId => String(memberId) !== String(album.owner_id));
+  
+  console.log('소유자 제외 구성원:', nonOwnerMembers); // 디버깅 추가
+  
+  if (nonOwnerMembers.length > 0) {
     document.getElementById('delete-warning').textContent = '구성원이 남아있으면 앨범을 삭제할 수 없습니다.';
     return;
   }
+  
   // 삭제 요청
   const delRes = await fetch(`${API_BASE_URL}/api/albums/${albumId}`, {
     method: 'DELETE',

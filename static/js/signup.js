@@ -5,7 +5,7 @@ let lastCheckedNickname = '';
 
 function updateSignupButton() {
   // 버튼은 항상 활성화 (중복확인 여부는 signup 함수에서 체크)
-  // signup-btn ID가 없으므로 이 함수는 비워둡니다
+  document.getElementById('signup-btn').disabled = false;
 }
 
 async function checkDuplicate(field) {

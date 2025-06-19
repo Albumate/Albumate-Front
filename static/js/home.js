@@ -11,7 +11,20 @@ async function loadAlbums() {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
-  let albums = data.data;
+  console.log('앨범 목록 응답:', data); // 디버깅 추가
+  
+  // API가 배열을 직접 반환하는지, data 속성으로 감싸서 반환하는지 확인
+  let albums;
+  if (Array.isArray(data)) {
+    // 배열을 직접 반환하는 경우
+    albums = data;
+  } else if (data.data) {
+    // data 속성으로 감싸서 반환하는 경우
+    albums = data.data;
+  } else {
+    albums = [];
+  }
+  
   if (typeof albums === 'string') {
     try {
       albums = JSON.parse(albums);
@@ -19,6 +32,9 @@ async function loadAlbums() {
       albums = [];
     }
   }
+  
+  console.log('파싱된 앨범:', albums); // 디버깅 추가
+  
   const grid = document.getElementById('album-grid');
   grid.innerHTML = '';
 
@@ -33,23 +49,29 @@ async function loadAlbums() {
       const photoRes = await fetch(`${API_BASE_URL}/api/albums/${album.id}/latest-photo`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      console.log('photoRes status:', photoRes.status); // 디버깅
+      console.log('최신 사진 API 응답 상태:', photoRes.status); // 디버깅
       if (photoRes.ok) {
         const photoData = await photoRes.json();
-        console.log('photoData:', photoData); // 디버깅
+        console.log('최신 사진 데이터:', photoData); // 디버깅
         
-        let data = photoData.data;
-        // data가 문자열이면 JSON 파싱
-        if (typeof data === 'string') {
+        // API 응답 구조 확인
+        let latestPhoto;
+        if (photoData.data) {
+          latestPhoto = photoData.data;
+        } else {
+          latestPhoto = photoData;
+        }
+        
+        if (typeof latestPhoto === 'string') {
           try {
-            data = JSON.parse(data);
+            latestPhoto = JSON.parse(latestPhoto);
           } catch (e) {
-            data = {};
+            latestPhoto = {};
           }
         }
         
-        if (data && data.url) {
-          photoUrl = data.url;
+        if (latestPhoto && latestPhoto.url) {
+          photoUrl = latestPhoto.url;
           console.log('최종 photoUrl:', photoUrl); // 디버깅
         }
       }
@@ -131,19 +153,12 @@ async function createAlbum() {
   }
   
   const data = await res.json();
-  console.log(data); // 구조 확인
+  console.log('앨범 생성 응답:', data); // 구조 확인
 
-  let albumData = data.data;
-  if (typeof albumData === 'string') {
-    try {
-      albumData = JSON.parse(albumData);
-    } catch (e) {
-      albumData = {};
-    }
-  }
+  // API가 앨범 데이터를 직접 반환하므로 data.id를 바로 사용
+  const albumId = data.id;
   
-  // API 문서에 따라 id 필드 사용
-  const albumId = albumData.id;
+  console.log('최종 albumId:', albumId); // 디버깅 추가
   
   if (albumId) {
     closeAlbumModal();
@@ -165,6 +180,7 @@ async function createAlbum() {
     
     window.location.href = `/album/${albumId}`;
   } else {
-    alert('앨범 생성 실패');
+    console.error('albumId를 찾을 수 없습니다. 전체 응답:', data);
+    alert('앨범 생성은 성공했지만 ID를 가져올 수 없습니다.');
   }
 }
