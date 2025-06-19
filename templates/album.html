@@ -3,70 +3,449 @@
   <head>
     <title>앨범</title>
     <link rel="stylesheet" href="/static/css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body>
-    <div class="sidebar" id="sidebar"></div>
-    <div class="main">
-      <div class="top-bar">
-        <h2 id="album-title"></h2>
-        <div>
-          <button id="add-photo-btn">사진 추가</button>
-          <button id="invite-btn">구성원 초대</button>
-          <button id="info-btn">앨범 정보 보기</button>
-          <button id="leave-btn">앨범에서 나가기</button>
-          <button id="delete-btn" style="display: none">앨범 삭제</button>
+  <body class="album-body">
+    <!-- Sidebar -->
+    <div class="album-sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">사용자의 Albumate</div>
+        <nav class="sidebar-nav">
+          <a href="/home" class="nav-link">홈페이지</a>
+          <a href="/invitations" class="nav-link">초대받은 앨범</a>
+        </nav>
+      </div>
+
+      <div class="sidebar-albums">
+        <div class="albums-header">내 앨범</div>
+        <div class="albums-list" id="albums-list">
+          <!-- 앨범 목록이 여기에 동적으로 추가됩니다 -->
         </div>
       </div>
-      <div id="photo-grid" class="grid"></div>
+
+      <div class="sidebar-footer">
+        <button class="logout-btn" id="logout-btn">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16,17 21,12 16,7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          로그아웃
+        </button>
+      </div>
     </div>
 
-    <!-- 사진 추가 팝업 -->
+    <!-- Main Content -->
+    <div class="album-main">
+      <!-- Top Bar -->
+      <div class="album-top-bar">
+        <h2 class="album-title" id="album-title">앨범 제목</h2>
+        <div class="album-actions">
+          <button class="album-btn primary" id="add-photo-btn">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            사진 추가
+          </button>
+          <button class="album-btn primary" id="invite-btn">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="8.5" cy="7" r="4" />
+              <line x1="20" y1="8" x2="20" y2="14" />
+              <line x1="23" y1="11" x2="17" y2="11" />
+            </svg>
+            구성원 초대
+          </button>
+          <button class="album-btn secondary" id="info-btn">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            앨범 정보 보기
+          </button>
+          <button class="album-btn secondary" id="leave-btn">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16,17 21,12 16,7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            앨범에서 나가기
+          </button>
+          <button
+            class="album-btn danger"
+            id="delete-btn"
+            style="display: none"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="3,6 5,6 21,6" />
+              <path
+                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+              />
+              <line x1="10" y1="11" x2="10" y2="17" />
+              <line x1="14" y1="11" x2="14" y2="17" />
+            </svg>
+            앨범 삭제
+          </button>
+        </div>
+      </div>
+
+      <!-- Photo Grid -->
+      <div class="album-content">
+        <div id="photo-grid" class="photo-masonry">
+          <!-- 사진들이 여기에 동적으로 추가됩니다 -->
+        </div>
+
+        <!-- Empty State (사진이 없을 때) -->
+        <div
+          class="photo-empty-state"
+          id="photo-empty-state"
+          style="display: none"
+        >
+          <div class="empty-icon">
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <circle cx="9" cy="9" r="2" />
+              <path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+            </svg>
+          </div>
+          <h3 class="empty-title">사진이 없습니다</h3>
+          <p class="empty-desc">첫 번째 사진을 업로드해보세요</p>
+          <button class="empty-btn" onclick="openPhotoModal()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            사진 추가
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Photo Upload Modal -->
     <div class="modal" id="photo-modal">
-      <div class="modal-content">
-        <h3>사진 추가</h3>
-        <input type="file" id="photo-file" accept="image/*" /><br />
-        <button onclick="uploadPhoto()">업로드</button>
-        <button onclick="closePhotoModal()">취소</button>
+      <div class="modal-content album-modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">사진 추가</h3>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">사진 파일 선택</label>
+            <input
+              type="file"
+              id="photo-file"
+              accept="image/*"
+              class="file-input"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn secondary" onclick="closePhotoModal()">
+            취소
+          </button>
+          <button class="modal-btn primary" onclick="uploadPhoto()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7,10 12,15 17,10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            업로드
+          </button>
+        </div>
       </div>
     </div>
-    <!-- 구성원 초대 팝업 -->
+
+    <!-- Invite Members Modal -->
     <div class="modal" id="invite-modal">
-      <div class="modal-content">
-        <h3>구성원 초대</h3>
-        <input
-          type="text"
-          id="invite-emails"
-          placeholder="초대할 이메일(쉼표로 구분)"
-        /><br />
-        <button onclick="inviteMembers()">초대</button>
-        <button onclick="closeInviteModal()">취소</button>
+      <div class="modal-content album-modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">구성원 초대</h3>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">초대할 이메일 (쉼표로 구분)</label>
+            <input
+              type="text"
+              id="invite-emails"
+              placeholder="example@email.com, friend@email.com"
+              class="modal-input"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn secondary" onclick="closeInviteModal()">
+            취소
+          </button>
+          <button class="modal-btn primary" onclick="inviteMembers()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="8.5" cy="7" r="4" />
+              <line x1="20" y1="8" x2="20" y2="14" />
+              <line x1="23" y1="11" x2="17" y2="11" />
+            </svg>
+            초대
+          </button>
+        </div>
       </div>
     </div>
-    <!-- 나가기 확인 팝업 -->
-    <div class="modal" id="leave-modal">
-      <div class="modal-content">
-        <h3>정말 앨범에서 나가시겠습니까?</h3>
-        <button onclick="leaveAlbum()">나가기</button>
-        <button onclick="closeLeaveModal()">취소</button>
-      </div>
-    </div>
-    <!-- 앨범 정보 및 구성원 보기 팝업 -->
+
+    <!-- Album Info Modal -->
     <div class="modal" id="info-modal">
-      <div class="modal-content">
-        <h3>앨범 정보</h3>
-        <div id="album-info"></div>
-        <h4 style="margin-top: 24px">구성원</h4>
-        <div id="members-list"></div>
-        <button onclick="closeInfoModal()">닫기</button>
+      <div class="modal-content album-modal-content-lg">
+        <div class="modal-header">
+          <h3 class="modal-title">앨범 정보</h3>
+        </div>
+        <div class="modal-body">
+          <div class="album-info-section">
+            <div class="info-item">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              <span class="info-label">생성일:</span>
+              <span class="info-value" id="info-created-date">-</span>
+            </div>
+            <div class="info-item">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span class="info-label">생성자:</span>
+              <span class="info-value" id="info-creator">-</span>
+            </div>
+            <div class="info-item">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+              <span class="info-label">구성원 수:</span>
+              <span class="info-value" id="info-member-count">-</span>
+            </div>
+          </div>
+
+          <div class="members-section">
+            <h4 class="section-title">구성원</h4>
+            <div class="members-list" id="members-list">
+              <!-- 구성원 목록이 여기에 표시됩니다 -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn primary" onclick="closeInfoModal()">
+            닫기
+          </button>
+        </div>
       </div>
     </div>
-    <!-- 앨범 삭제 확인 모달 -->
+
+    <!-- Leave Album Confirmation Modal -->
+    <div class="modal" id="leave-modal">
+      <div class="modal-content album-modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title warning">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+              />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            앨범 나가기
+          </h3>
+        </div>
+        <div class="modal-body">
+          <p class="warning-text">정말 앨범에서 나가시겠습니까?</p>
+          <p class="warning-subtext">
+            나간 후에는 다시 초대받아야 앨범에 접근할 수 있습니다.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn secondary" onclick="closeLeaveModal()">
+            취소
+          </button>
+          <button class="modal-btn warning" onclick="leaveAlbum()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16,17 21,12 16,7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            나가기
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Album Confirmation Modal -->
     <div class="modal" id="delete-modal">
-      <div class="modal-content">
-        <h3>앨범을 삭제하시겠습니까?</h3>
-        <div id="delete-warning" style="color: red"></div>
-        <button onclick="confirmDeleteAlbum()">삭제</button>
-        <button onclick="closeDeleteModal()">취소</button>
+      <div class="modal-content album-modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title danger">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+              />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            앨범 삭제
+          </h3>
+        </div>
+        <div class="modal-body">
+          <p class="danger-text">앨범을 삭제하시겠습니까?</p>
+          <div class="danger-warning">
+            <p class="danger-warning-title">⚠️ 경고</p>
+            <p class="danger-warning-text">
+              삭제된 앨범과 모든 사진은 복구할 수 없습니다. 이 작업은 되돌릴 수
+              없습니다.
+            </p>
+          </div>
+          <div id="delete-warning" class="error-message"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn secondary" onclick="closeDeleteModal()">
+            취소
+          </button>
+          <button class="modal-btn danger" onclick="confirmDeleteAlbum()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="3,6 5,6 21,6" />
+              <path
+                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+              />
+              <line x1="10" y1="11" x2="10" y2="17" />
+              <line x1="14" y1="11" x2="14" y2="17" />
+            </svg>
+            삭제
+          </button>
+        </div>
       </div>
     </div>
 
